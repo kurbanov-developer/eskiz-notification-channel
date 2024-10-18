@@ -1,5 +1,5 @@
 {
-    "name": "laravel/eskiz-notification-channel",
+    "name": "kurbanov-developer/eskiz-notification-channel",
     "description": "Eskiz SMS Notification Channel for Laravel",
     "type": "library",
     "license": "MIT",
