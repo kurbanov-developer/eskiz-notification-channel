@@ -34,5 +34,7 @@
                 "KurbanovDeveloper\\EskizNotificationChannel\\EskizServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

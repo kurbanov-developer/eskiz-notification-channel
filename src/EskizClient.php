@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendor\EskizNotificationChannel;
+namespace KurbanovDeveloper\EskizNotificationChannel;
 
 use GuzzleHttp\Client;
 

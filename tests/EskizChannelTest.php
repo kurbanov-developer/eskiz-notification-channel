@@ -1,10 +1,10 @@
 <?php
 
-namespace Vendor\EskizNotificationChannel\Tests;
+namespace KurbanovDeveloper\EskizNotificationChannel\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Vendor\EskizNotificationChannel\EskizChannel;
-use Vendor\EskizNotificationChannel\EskizMessage;
+use KurbanovDeveloper\EskizNotificationChannel\EskizChannel;
+use KurbanovDeveloper\EskizNotificationChannel\EskizMessage;
 use GuzzleHttp\Client;
 
 class EskizChannelTest extends TestCase
