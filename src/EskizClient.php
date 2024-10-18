@@ -10,24 +10,37 @@ class EskizClient
 
     public function __construct()
     {
+        $this->token = $this->getToken();
+
         $this->client = new Client([
             'base_uri' => config('eskiz.api_url'),
             'headers' => [
-                'Authorization' => 'Bearer ' . config('eskiz.api_token'),
+                'Authorization' => 'Bearer ' . $this->token,
             ],
         ]);
     }
 
     // Получить токен
-    public function getToken($email, $password)
+    public function getToken()
     {
-        $response = $this->client->post('/api/auth/login', [
+        $tempClient = new Client([
+            'base_uri' => config('eskiz.api_url'),
+        ]);
+
+        $response = $tempClient->post('/api/auth/login', [
             'json' => [
-                'email' => $email,
-                'password' => $password,
+                'email' => config('eskiz.email'),
+                'password' => config('eskiz.password'),
             ]
         ]);
-        return json_decode($response->getBody(), true);
+
+        $data = json_decode($response->getBody(), true);
+
+        if (isset($data['data']['token'])) {
+            return $data['data']['token'];
+        }
+
+        throw new \Exception('Unable to retrieve token. Please check your credentials.');
     }
 
     // Обновить токен
