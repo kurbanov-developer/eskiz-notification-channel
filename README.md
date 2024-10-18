@@ -9,7 +9,7 @@
 To integrate the Eskiz notifications channel with your Laravel application, you can use Composer. Run the following command in your terminal:
 
 ```bash
-composer require kurbanov-developer/eskizsms
+composer require kurbanov-developer/eskiz-notification-channel
 ```
 After successful installation, update your .env file with the following configuration:
 
