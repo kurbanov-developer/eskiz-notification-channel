@@ -1,0 +1,33 @@
+{
+    "name": "laravel/eskiz-notification-channel",
+    "description": "Eskiz SMS Notification Channel for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ismoil Kurbonov",
+            "email": "kurbanov.developer@yandex.ru"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/notifications": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Illuminate\\EskizNotificationChannel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Illuminate\\EskizNotificationChannel\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Illuminate\\EskizNotificationChannel\\EskizServiceProvider"
+            ]
+        }
+    }
+}
