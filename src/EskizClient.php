@@ -21,7 +21,7 @@ class EskizClient
     // Получить токен
     public function getToken($email, $password)
     {
-        $response = $this->client->post('/auth/login', [
+        $response = $this->client->post('/api/auth/login', [
             'json' => [
                 'email' => $email,
                 'password' => $password,
@@ -33,7 +33,7 @@ class EskizClient
     // Обновить токен
     public function updateToken($token)
     {
-        $response = $this->client->patch('/auth/token', [
+        $response = $this->client->patch('/api/auth/refresh', [
             'json' => [
                 'token' => $token,
             ]
@@ -44,14 +44,14 @@ class EskizClient
     // Данные пользователя
     public function getUserData()
     {
-        $response = $this->client->get('/auth/me');
+        $response = $this->client->get('/api/auth/user');
         return json_decode($response->getBody(), true);
     }
 
     // Отправить шаблон
     public function sendTemplate($templateId, $phone, $params)
     {
-        $response = $this->client->post('/template/send', [
+        $response = $this->client->post('/api/user/template', [
             'json' => [
                 'template_id' => $templateId,
                 'mobile_phone' => $phone,
@@ -64,14 +64,14 @@ class EskizClient
     // Получить список шаблонов
     public function getTemplates()
     {
-        $response = $this->client->get('/template/list');
+        $response = $this->client->get('/api/user/templates');
         return json_decode($response->getBody(), true);
     }
 
     // Отправить СМС
     public function sendSms($phone, $message)
     {
-        $response = $this->client->post('/message/sms/send', [
+        $response = $this->client->post('/api/message/sms/send', [
             'json' => [
                 'mobile_phone' => $phone,
                 'message' => $message,
@@ -83,7 +83,7 @@ class EskizClient
     // Отправить СМС рассылка
     public function sendSmsBulk($phones, $message)
     {
-        $response = $this->client->post('/message/sms/send-bulk', [
+        $response = $this->client->post('/api/message/sms/send-batch', [
             'json' => [
                 'mobile_phones' => $phones,
                 'message' => $message,
@@ -95,7 +95,7 @@ class EskizClient
     // Отправить международный СМС
     public function sendInternationalSms($phone, $message)
     {
-        $response = $this->client->post('/message/sms/international', [
+        $response = $this->client->post('/api/message/sms/send-global', [
             'json' => [
                 'mobile_phone' => $phone,
                 'message' => $message,
@@ -107,7 +107,7 @@ class EskizClient
     // Детализация
     public function getDetails($bulkId)
     {
-        $response = $this->client->post('/message/details', [
+        $response = $this->client->post('/api/message/sms/get-user-messages?status', [
             'json' => [
                 'bulk_id' => $bulkId,
             ]
@@ -118,7 +118,7 @@ class EskizClient
     // Получить СМС по рассылке
     public function getSmsByBulk($bulkId)
     {
-        $response = $this->client->post('/message/sms/by-bulk', [
+        $response = $this->client->post('/api/message/sms/get-user-messages-by-dispatch?status', [
             'json' => [
                 'bulk_id' => $bulkId,
             ]
@@ -129,7 +129,7 @@ class EskizClient
     // Статус рассылки
     public function getBulkStatus($bulkId)
     {
-        $response = $this->client->post('/message/status', [
+        $response = $this->client->post('/api/message/sms/get-dispatch-status', [
             'json' => [
                 'bulk_id' => $bulkId,
             ]
@@ -140,56 +140,56 @@ class EskizClient
     // Получить список никнеймов
     public function getSenderList()
     {
-        $response = $this->client->get('/message/senders');
+        $response = $this->client->get('/api/nick/me');
         return json_decode($response->getBody(), true);
     }
 
     // Итог отправленных СМС
     public function getSmsSummary()
     {
-        $response = $this->client->post('/message/summary');
+        $response = $this->client->post('/api/user/totals');
         return json_decode($response->getBody(), true);
     }
 
     // Получить баланс
     public function getBalance()
     {
-        $response = $this->client->get('/balance');
+        $response = $this->client->get('/api/user/get-limit');
         return json_decode($response->getBody(), true);
     }
 
     // Экспортировать в CSV
     public function exportCsv()
     {
-        $response = $this->client->post('/message/export');
+        $response = $this->client->post('/api/message/export?status=all');
         return $response->getBody();
     }
 
     // Итого по месяцам
     public function getMonthlyTotal()
     {
-        $response = $this->client->get('/message/monthly-total');
+        $response = $this->client->get('/api/report/total-by-month?year=2024');
         return json_decode($response->getBody(), true);
     }
 
     // Итого по компаниям
     public function getCompanyTotal()
     {
-        $response = $this->client->post('/message/company-total');
+        $response = $this->client->post('/api/report/total-by-smsc');
         return json_decode($response->getBody(), true);
     }
 
     // Системные логи
     public function getSystemLogs()
     {
-        $response = $this->client->get('/logs');
+        $response = $this->client->get('/api/logs/sms/:id');
         return json_decode($response->getBody(), true);
     }
 
     // Расходы по датам
     public function getExpensesByDates($startDate, $endDate)
     {
-        $response = $this->client->post('/expenses/dates', [
+        $response = $this->client->post('/api/report/total-by-range?status', [
             'json' => [
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -201,7 +201,7 @@ class EskizClient
     // Расходы по рассылке
     public function getExpensesByBulk($bulkId)
     {
-        $response = $this->client->post('/expenses/by-bulk', [
+        $response = $this->client->post('/api/report/total-by-dispatch?status', [
             'json' => [
                 'bulk_id' => $bulkId,
             ]
@@ -212,7 +212,7 @@ class EskizClient
     // Получить статус по ID
     public function getStatusById($id)
     {
-        $response = $this->client->get("/message/status/{$id}");
+        $response = $this->client->get("api/message/sms/status_by_id/{$id}");
         return json_decode($response->getBody(), true);
     }
 }
