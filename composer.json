@@ -20,18 +20,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Illuminate\\EskizNotificationChannel\\": "src/"
+            "KurbanovDeveloper\\EskizNotificationChannel\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Illuminate\\EskizNotificationChannel\\Tests\\": "tests/"
+            "KurbanovDeveloper\\EskizNotificationChannel\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Illuminate\\EskizNotificationChannel\\EskizServiceProvider"
+                "KurbanovDeveloper\\EskizNotificationChannel\\EskizServiceProvider"
             ]
         }
     }
