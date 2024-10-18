@@ -14,6 +14,10 @@
         "illuminate/notifications": "^8.0|^9.0|^10.0|^11.0",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0"
     },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.2",
+        "phpunit/phpunit": "^9.0|^10.4"
+    },
     "autoload": {
         "psr-4": {
             "Illuminate\\EskizNotificationChannel\\": "src/"
