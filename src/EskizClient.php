@@ -44,13 +44,9 @@ class EskizClient
     }
 
     // Обновить токен
-    public function updateToken($token)
+    public function updateToken()
     {
-        $response = $this->client->patch('/api/auth/refresh', [
-            'json' => [
-                'token' => $token,
-            ]
-        ]);
+        $response = $this->client->patch('/api/auth/refresh');
         return json_decode($response->getBody(), true);
     }
 
@@ -62,13 +58,11 @@ class EskizClient
     }
 
     // Отправить шаблон
-    public function sendTemplate($templateId, $phone, $params)
+    public function sendTemplate($templateId)
     {
         $response = $this->client->post('/api/user/template', [
             'json' => [
                 'template_id' => $templateId,
-                'mobile_phone' => $phone,
-                'params' => $params,
             ]
         ]);
         return json_decode($response->getBody(), true);
@@ -94,57 +88,74 @@ class EskizClient
     }
 
     // Отправить СМС рассылка
-    public function sendSmsBulk($phones, $message)
+    
+    /**
+     * "messages": [{"user_sms_id":"sms1","to": 998991234567, "text": "eto test"}, {"user_sms_id":"sms2","to": 998991234567, "text": "eto test 2"}],
+    */
+    public function sendSmsBulk(array $messages, $dispatch_id)
     {
         $response = $this->client->post('/api/message/sms/send-batch', [
             'json' => [
-                'mobile_phones' => $phones,
-                'message' => $message,
+                'messages' => $messages,
+                'dispatch_id' => $dispatch_id,
             ]
         ]);
         return json_decode($response->getBody(), true);
     }
 
     // Отправить международный СМС
-    public function sendInternationalSms($phone, $message)
+    public function sendInternationalSms($phone, $message, $country_code, $unicode = '1')
     {
         $response = $this->client->post('/api/message/sms/send-global', [
             'json' => [
                 'mobile_phone' => $phone,
                 'message' => $message,
+                'country_code' => $country_code,
+                'unicode' => $unicode,
             ]
         ]);
         return json_decode($response->getBody(), true);
     }
 
     // Детализация
-    public function getDetails($bulkId)
+    /***
+     * $start_date = '2023-11-01 00:00' 
+     * С %Y-%m-%d %H:%M
+     */
+    public function getDetails($start_date, $to_date, $page_size = 20, $count = 1, $status = '', $is_ad = '')
     {
-        $response = $this->client->post('/api/message/sms/get-user-messages?status', [
+        $response = $this->client->post('/api/message/sms/get-user-messages?status=' . $status, [
             'json' => [
-                'bulk_id' => $bulkId,
+                'start_date' => $start_date,
+                'to_date' => $to_date,
+                'page_size' => $page_size,
+                'count' => $count,
+                'is_ad' => $is_ad,
             ]
         ]);
         return json_decode($response->getBody(), true);
     }
 
     // Получить СМС по рассылке
-    public function getSmsByBulk($bulkId)
+    public function getSmsByBulk($dispatch_id, $count = 1, $is_ad = '',  $status = '')
     {
-        $response = $this->client->post('/api/message/sms/get-user-messages-by-dispatch?status', [
+        $response = $this->client->post('/api/message/sms/get-user-messages-by-dispatch?status=' . $status, [
             'json' => [
-                'bulk_id' => $bulkId,
+                'dispatch_id' => $dispatch_id,
+                'count' => $count,
+                'is_ad' => $is_ad,
             ]
         ]);
         return json_decode($response->getBody(), true);
     }
 
     // Статус рассылки
-    public function getBulkStatus($bulkId)
+    public function getBulkStatus($dispatch_id, $is_global = 0)
     {
         $response = $this->client->post('/api/message/sms/get-dispatch-status', [
             'json' => [
-                'bulk_id' => $bulkId,
+                'dispatch_id' => $dispatch_id,
+                'is_global' => $is_global,
             ]
         ]);
         return json_decode($response->getBody(), true);
@@ -158,9 +169,14 @@ class EskizClient
     }
 
     // Итог отправленных СМС
-    public function getSmsSummary()
+    public function getSmsSummary($year, $month)
     {
-        $response = $this->client->post('/api/user/totals');
+        $response = $this->client->post('/api/user/totals', [
+            'json' => [
+                'year' => $year,
+                'month' => $month,
+            ]
+        ]);
         return json_decode($response->getBody(), true);
     }
 
@@ -172,51 +188,67 @@ class EskizClient
     }
 
     // Экспортировать в CSV
-    public function exportCsv()
+    public function exportCsv($year, $month)
     {
-        $response = $this->client->post('/api/message/export?status=all');
+        $response = $this->client->post('/api/message/export?status=all', [
+            'json' => [
+                'year' => $year,
+                'month' => $month,
+            ]
+        ]);
         return $response->getBody();
     }
 
     // Итого по месяцам
-    public function getMonthlyTotal()
+    public function getMonthlyTotal($year)
     {
-        $response = $this->client->get('/api/report/total-by-month?year=2024');
+        $response = $this->client->get('/api/report/total-by-month?year=' . $year);
         return json_decode($response->getBody(), true);
     }
 
     // Итого по компаниям
-    public function getCompanyTotal()
+    public function getCompanyTotal($year, $month)
     {
-        $response = $this->client->post('/api/report/total-by-smsc');
+        $response = $this->client->post('/api/report/total-by-smsc', [
+            'json' => [
+                'year' => $year,
+                'month' => $month,
+            ]
+        ]);
         return json_decode($response->getBody(), true);
     }
 
     // Системные логи
-    public function getSystemLogs()
+    public function getSystemLogs($sms_id)
     {
-        $response = $this->client->get('/api/logs/sms/:id');
+        $response = $this->client->get('/api/logs/sms/' . $sms_id);
         return json_decode($response->getBody(), true);
     }
 
     // Расходы по датам
-    public function getExpensesByDates($startDate, $endDate)
+    /***
+     * $start_date = '2023-11-01 00:00' 
+     * С %Y-%m-%d %H:%M
+     */
+    public function getExpensesByDates($start_date, $to_date, $is_ad = '', $status = '')
     {
-        $response = $this->client->post('/api/report/total-by-range?status', [
+        $response = $this->client->post('/api/report/total-by-range?status=' . $status, [
             'json' => [
-                'start_date' => $startDate,
-                'end_date' => $endDate,
+                'start_date' => $start_date,
+                'to_date' => $to_date,
+                'is_ad' => $is_ad,
             ]
         ]);
         return json_decode($response->getBody(), true);
     }
 
     // Расходы по рассылке
-    public function getExpensesByBulk($bulkId)
+    public function getExpensesByBulk($dispatch_id, $is_ad = '', $status = '')
     {
-        $response = $this->client->post('/api/report/total-by-dispatch?status', [
+        $response = $this->client->post('/api/report/total-by-dispatch?status=' . $status, [
             'json' => [
-                'bulk_id' => $bulkId,
+                'dispatch_id' => $dispatch_id,
+                'is_ad' => $is_ad,
             ]
         ]);
         return json_decode($response->getBody(), true);
