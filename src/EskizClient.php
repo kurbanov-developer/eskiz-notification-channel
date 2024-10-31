@@ -7,9 +7,14 @@ use GuzzleHttp\Client;
 class EskizClient
 {
     protected $client;
+    protected $email;
+    protected $secret;
 
-    public function __construct()
+    public function __construct($email, $secret)
     {
+        $this->email = $email;
+        $this->secret = $secret;
+
         $this->token = $this->getToken();
 
         $this->client = new Client([
@@ -29,8 +34,8 @@ class EskizClient
 
         $response = $tempClient->post('/api/auth/login', [
             'json' => [
-                'email' => config('eskiz.email'),
-                'password' => config('eskiz.password'),
+                'email' => $this->email,
+                'password' => $this->secret,
             ]
         ]);
 

@@ -17,6 +17,11 @@ class EskizServiceProvider extends ServiceProvider
 
     public function register()
     {
-        //
+        $this->app->singleton(EskizClient::class, function ($app) {
+            return new EskizClient(
+                config('eskiz.email'),
+                config('eskiz.password')
+            );
+        });
     }
 }
